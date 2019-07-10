@@ -1,10 +1,10 @@
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.ByteOrder;
 import java.io.IOException;
-
-
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -134,7 +134,62 @@ public class MatFileReader
         
         read(file);
     }
+    
+    public MatFileReader(InputStream str) throws IOException
+    {
+        
+        read(str);
+    }
 
+    /**
+     * Read a mat file from a stream. Internally this will read the stream fully
+     * into memory before parsing it.
+     * 
+     * @param stream
+     *            a valid MAT-file stream to be read
+     * @param filter
+     *            the array filter applied during reading
+     * 
+     * @return the same as <code>{@link #getContent()}</code>
+     * @see MatFileFilter
+     * @throws IOException
+     *             if error occurs during file processing
+     */
+    public synchronized Map<String, MLDouble> read(InputStream stream) throws IOException
+    {
+    	data    = new LinkedHashMap<String, MLDouble>();
+    	
+        ByteBuffer buf = null;
+        
+        ByteArrayOutputStream2 baos = new ByteArrayOutputStream2();
+        copy(stream, baos);
+        buf = ByteBuffer.wrap(baos.getBuf(), 0, baos.getCount());
+
+        // read in file header
+        readHeader(buf);
+
+        while (buf.remaining() > 0)
+        {
+            readData(buf);
+        }
+
+        return data;
+    }
+    
+    static class ByteArrayOutputStream2 extends ByteArrayOutputStream
+	{
+	    public ByteArrayOutputStream2(){super();}
+	    public byte[] getBuf(){return buf;}
+	    public int getCount(){return count;}
+	}
+    
+    private void copy(InputStream stream, ByteArrayOutputStream2 output) throws IOException {
+        final byte[] buffer = new byte[1024 * 4];
+        int n = 0;
+        while (-1 != (n = stream.read(buffer))) {
+            output.write(buffer, 0, n);
+        }
+    }
     
     /**
      * Reads the content of a MAT-file and returns the mapped content.
@@ -269,17 +324,14 @@ public class MatFileReader
                 int pos = buf.position();
                 
                 MLDouble element = readMatrix( buf, true );
+                
        
-                if ( element != null ) {
-                    if ( !data.containsKey( element.name ) ) {
-                        data.put(element.name, element);
-                    }
-                    if ( element.name == "@" ) {
-                        int nextIndex = 0;
-                        for( ; data.containsKey("@" + nextIndex); nextIndex++ ) { }
-                        data.put( "@" + nextIndex, element );
-                    }
-                } else {
+                if ( element != null && !data.containsKey( element.name ) )
+                {
+                    data.put( element.name, element );
+                }
+                else
+                {
                     int red = buf.position() - pos;
                     int toread = tag.size - red;
                     buf.position( buf.position() + toread );

@@ -19,6 +19,7 @@ public class Main
 		//
 		double[][][] meshGrid = MatReader.meshGrid();
 		//liest die Luftverschmutzungswerte aus der mat-Datei: data[0] := P1 , data[1] := P2
+		//Verfügbare Varianten: "MatReader.read(InputStream str)" und "MatReader.read(File file)"
 		//
 		// Matrix Aufbau: p1=data[0];
 		// 

@@ -1,15 +1,7 @@
 
 import java.io.File;
-import java.nio.ByteOrder;
 import java.io.IOException;
-
-
-import java.io.RandomAccessFile;
-import java.lang.ref.WeakReference;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.DecimalFormat;
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -20,11 +12,37 @@ public class MatReader
 	public static double[][][] read(File file)
 	{
 		MatFileReader matfilereader;
+		
 		double[][][] data = new double[2][][];
 		
 		try 
 		{
 			matfilereader = new MatFileReader(file);
+			MatFileReader.MLDouble mP1 = matfilereader.getMLArray("grid_P1");
+			MatFileReader.MLDouble mP2 = matfilereader.getMLArray("grid_P2");
+			
+			data[0] = mP1.getArray();
+			data[1] = mP2.getArray();
+			return data;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+			
+		}
+		
+	}
+	
+	public static double[][][] read(InputStream str)
+	{
+		MatFileReader matfilereader;
+		
+		double[][][] data = new double[2][][];
+		
+		try 
+		{
+			matfilereader = new MatFileReader(str);
 			MatFileReader.MLDouble mP1 = matfilereader.getMLArray("grid_P1");
 			MatFileReader.MLDouble mP2 = matfilereader.getMLArray("grid_P2");
 			
