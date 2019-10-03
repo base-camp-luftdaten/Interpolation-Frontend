@@ -19,7 +19,7 @@ public class Main
 		//double lonMin, -> Longitude Untergrenze
 		//double latMin, -> Latitude Untergrenze
 		//int posiblePoints, -> Anzahl der gewünschten Heatmap Punkte n
-		//boolean finish, -> True: Fügt Extrapunkte Am Rand ein um Streifen am Rand zu vermeiden, es kommen jedoch <sqrt(n)*2 Punkte dazu
+		//boolean finish, -> True: Fügt Extrapunkte Am Rand ein um Streifen am Rand zu vermeiden, es können jedoch <sqrt(n)*2 Punkte dazu kommen
 		//boolean P1P2) -> False: Heatmap für P1; True: Heatmap für P2
 		System.out.println(l.toJSONString());
 	}
