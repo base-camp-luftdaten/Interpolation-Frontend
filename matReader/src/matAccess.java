@@ -24,6 +24,17 @@ public class matAccess
 		lon=meshGrid[1];
 	}
 	
+	public matAccess(InputStream str)
+	{
+		double [][][] data = MatReader.read(str);
+		double[][][] meshGrid = MatReader.meshGrid();
+		p1=data[0];
+		p2=data[1];
+		
+		lat=meshGrid[0];
+		lon=meshGrid[1];
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONArray pointArray(double lonMax, double latMax, double lonMin, double latMin, int posiblePoints, boolean finish, boolean P1P2)
 	{
@@ -199,7 +210,7 @@ public class matAccess
 		}
 		else
 		{
-			System.out.println("Auﬂerhalb des Interpolations-Radius");
+			System.out.println("Au√üerhalb des Interpolations-Radius");
 			return null;
 		}
 		
